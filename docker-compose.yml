@@ -5,37 +5,45 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: odoo19-bytedav:latest
+    image: odoo19-enterprise:latest
+    container_name: odoo_prod_web
+    restart: always
     depends_on:
       - db
     environment:
       - HOST=db
       - USER=odoo
-      - PASSWORD=odoo
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin_secret_123}
+      - PASSWORD=${POSTGRES_PASSWORD}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     volumes:
       - odoo-data:/var/lib/odoo
-    # No es necesario exponer puertos aquí si usas el proxy de Coolify
-    # pero se deja por compatibilidad
-    ports:
-      - "8069:8069"
+    # Coolify manejará el SSL y el dominio apuntando al 8069
     networks:
       - coolify-network
 
   db:
     image: postgres:16-alpine
+    container_name: odoo_prod_db
+    restart: always
     environment:
       - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    command: >
+      postgres -c 'max_connections=200' 
+               -c 'shared_buffers=512MB'
+               -c 'effective_cache_size=1536MB'
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
     networks:
       - coolify-network
 
 volumes:
   odoo-data:
-  postgres-data:
+    driver: local
+  odoo-db-data:
+    driver: local
 
 networks:
   coolify-network:
