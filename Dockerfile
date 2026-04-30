@@ -1,9 +1,10 @@
 FROM python:3.12-slim-bookworm
 
-# Evitar prompts de frontend
+# Evitar prompts y configurar locale
 ENV DEBIAN_FRONTEND=noninteractive
+ENV LC_ALL=C.UTF-8
 
-# Instalar dependencias de sistema críticas para Odoo 19
+# Dependencias de sistema para Odoo 19 Enterprise
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
@@ -26,35 +27,42 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     build-essential \
     git \
-    && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb \
+    libxrender1 \
+    xfonts-75dpi \
+    xfonts-base \
+    # wkhtmltopdf para Odoo 19
+    && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
     && apt-get install -y ./wkhtmltox.deb \
     && rm wkhtmltox.deb \
     && rm -rf /var/lib/apt/lists/*
 
-# Crear usuario de sistema para Odoo
-RUN useradd -m -U -r -d /opt/odoo -s /bin/bash odoo
+# Instalación de dependencias globales de Odoo 19
+RUN npm install -g rtlcss
 
-# Configurar directorio de trabajo
+# Crear usuario y directorios
+RUN useradd -m -U -r -d /opt/odoo -s /bin/bash odoo
 WORKDIR /opt/odoo
 
-# Copiar el código del repositorio bytedav-ltd/odoo19
+# Copiar requerimientos e instalar (cacheado)
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir gevent  # Necesario para Workers en producción
+
+# Copiar el código fuente del repo
 COPY . .
 
-# Instalar requerimientos de Python (específicos de Odoo 19)
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Crear directorios para datos y logs con permisos correctos
+# Configurar permisos
 RUN mkdir -p /var/lib/odoo /etc/odoo /var/log/odoo && \
     chown -R odoo:odoo /opt/odoo /var/lib/odoo /etc/odoo /var/log/odoo
 
-# Copiar configuración (archivo que crearemos abajo)
+# Copiar archivo de configuración
 COPY ./odoo.conf /etc/odoo/odoo.conf
 RUN chown odoo:odoo /etc/odoo/odoo.conf
 
 USER odoo
+ENV ODOO_RC /etc/odoo/odoo.conf
 
-# Exponer el puerto de Odoo
 EXPOSE 8069 8072
 
 ENTRYPOINT ["/opt/odoo/odoo-bin"]
