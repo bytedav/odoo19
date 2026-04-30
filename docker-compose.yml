@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: odoo19-bytedav:latest
+    depends_on:
+      - db
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin_secret_123}
+    volumes:
+      - odoo-data:/var/lib/odoo
+    # No es necesario exponer puertos aquí si usas el proxy de Coolify
+    # pero se deja por compatibilidad
+    ports:
+      - "8069:8069"
+    networks:
+      - coolify-network
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - coolify-network
+
+volumes:
+  odoo-data:
+  postgres-data:
+
+networks:
+  coolify-network:
+    external: true
