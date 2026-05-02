@@ -3,250 +3,288 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odoo 19 Enterprise — Master Guide</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Odoo 19 Enterprise | Centro de Despliegue Técnico</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #1a1a24;
-    --border: #2a2a3a;
-    --purple: #7c3aed;
-    --purple-light: #a78bfa;
-    --purple-dim: #3d1d78;
-    --green: #10b981;
-    --green-dim: #064e3b;
-    --yellow: #f59e0b;
-    --red: #ef4444;
+    --bg: #0b0e14;
+    --card: #151921;
+    --border: #262c36;
+    --accent: #7c3aed;
+    --accent-light: #a78bfa;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
     --text: #e2e8f0;
-    --text-muted: #64748b;
-    --code-bg: #0d0d14;
-    --radius: 12px;
+    --text-dim: #94a3b8;
+    --code-bg: #080a0f;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; line-height: 1.6; }
-
-  header {
-    background: linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 50%, #0a0a0f 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 50px 20px;
-    text-align: center;
+  body { 
+    background-color: var(--bg); 
+    color: var(--text); 
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 100px;
   }
 
   .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-  
-  .badge {
-    display: inline-flex; background: var(--purple-dim); border: 1px solid var(--purple);
-    color: var(--purple-light); padding: 5px 12px; border-radius: 100px; font-size: 11px;
-    text-transform: uppercase; margin-bottom: 15px; font-weight: 700;
+
+  /* HEADER */
+  header {
+    background: linear-gradient(to bottom, #1a1033 0%, var(--bg) 100%);
+    padding: 80px 20px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
   }
 
-  h1 { font-size: clamp(28px, 5vw, 48px); margin-bottom: 10px; }
-  h1 span { color: var(--purple-light); }
-
-  /* SELECTOR DE MÉTODO */
-  .method-selector {
-    display: flex; justify-content: center; gap: 10px; margin: 30px 0;
-  }
-  .method-btn {
-    padding: 12px 24px; border-radius: 10px; border: 1px solid var(--border);
-    background: var(--surface); color: var(--text-muted); cursor: pointer;
-    font-weight: 700; transition: all 0.3s;
-  }
-  .method-btn.active {
-    background: var(--purple); color: white; border-color: var(--purple);
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(124, 58, 237, 0.1); border: 1px solid var(--accent);
+    color: var(--accent-light); padding: 6px 16px; border-radius: 100px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 20px;
   }
 
-  /* FORMULARIO */
-  .config-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 25px; margin-bottom: 30px; }
-  .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-  .form-group { display: flex; flex-direction: column; gap: 5px; }
-  .form-group label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-  .form-group input { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; color: var(--purple-light); font-family: 'JetBrains Mono'; font-size: 13px; }
+  h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
+  h1 span { color: var(--accent-light); }
 
-  /* PASOS */
-  .step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 20px; overflow: hidden; }
-  .step-header { padding: 20px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: background 0.2s; }
-  .step-header:hover { background: var(--surface2); }
-  .step-num { width: 32px; height: 32px; background: var(--purple-dim); border: 1px solid var(--purple); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: var(--purple-light); }
-  .step-body { padding: 20px; border-top: 1px solid var(--border); display: none; }
-  .step.open .step-body { display: block; }
+  /* MÉTODO SELECTOR */
+  .method-picker {
+    display: flex; background: var(--card); padding: 6px; border-radius: 14px;
+    border: 1px solid var(--border); width: fit-content; margin: 30px auto;
+  }
+  .m-btn {
+    padding: 12px 28px; border-radius: 10px; border: none; background: transparent;
+    color: var(--text-dim); cursor: pointer; font-weight: 600; font-family: inherit; transition: 0.3s;
+  }
+  .m-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); }
 
-  /* COMPONENTES */
-  .note { padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 13px; display: flex; gap: 10px; border-left: 4px solid transparent; }
-  .note.info { background: rgba(124,58,237,0.1); border-color: var(--purple); color: var(--purple-light); }
-  .note.warning { background: rgba(245,158,11,0.1); border-color: var(--yellow); color: #fbbf24; }
-  .note.error { background: rgba(239,68,68,0.1); border-color: var(--red); color: #fca5a5; }
+  /* CONFIG FORM */
+  .config-section {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 30px; margin-bottom: 40px;
+  }
+  .config-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;
+  }
+  .input-group { display: flex; flex-direction: column; gap: 8px; }
+  .input-group label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
+  .input-group input {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px; color: var(--accent-light); font-family: 'JetBrains Mono', monospace; font-size: 13px; outline: none;
+  }
+  .input-group input:focus { border-color: var(--accent); }
 
-  .code-block { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; margin: 15px 0; }
-  .code-header { background: var(--surface2); padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-  .copy-btn { background: var(--purple-dim); border: 1px solid var(--purple); color: white; padding: 3px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; }
-  .code-content { padding: 15px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #c9d1d9; white-space: pre-wrap; word-break: break-all; }
+  /* STEPS */
+  .step-card { 
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px; 
+    margin-bottom: 24px; overflow: hidden;
+  }
+  .step-header { padding: 24px; cursor: pointer; display: flex; align-items: center; gap: 20px; user-select: none; }
+  .step-icon {
+    width: 40px; height: 40px; background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: var(--accent-light); flex-shrink: 0;
+  }
+  .step-title h3 { font-size: 18px; font-weight: 700; }
+  .step-title p { font-size: 13px; color: var(--text-dim); }
 
-  footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 11px; }
+  .step-content { padding: 0 24px 24px; border-top: 1px solid var(--border); display: none; }
+  .step-card.open .step-content { display: block; }
+
+  /* ACCIÓN WEB (CRÍTICO) */
+  .web-action {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    border: 2px solid var(--accent);
+    padding: 30px;
+    border-radius: 20px;
+    margin: 40px 0;
+    text-align: center;
+  }
+  .web-action h2 { color: white; margin-bottom: 15px; font-size: 24px; }
+  .web-action p { color: var(--accent-light); margin-bottom: 20px; }
+  .web-action .url-box {
+    background: var(--code-bg); padding: 12px; border-radius: 10px; display: inline-block;
+    font-family: 'JetBrains Mono'; color: var(--success); font-weight: 700;
+  }
+
+  /* CODE BOXES */
+  .code-box { background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px; margin: 16px 0; overflow: hidden; }
+  .code-top { background: rgba(255,255,255,0.03); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .copy-btn {
+    background: var(--accent); color: white; border: none; padding: 4px 12px; 
+    border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;
+  }
+  .code-area { padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #cbd5e1; white-space: pre-wrap; word-break: break-all; }
+
+  /* NOTAS */
+  .note { padding: 16px; border-radius: 12px; margin: 15px 0; font-size: 13px; display: flex; gap: 12px; line-height: 1.5; }
+  .note.info { background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.2); color: var(--accent-light); }
+  .note.warning { background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); color: #fde68a; }
+  .note.error { background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: #fca5a5; }
+
+  footer { text-align: center; padding: 60px; color: var(--text-dim); border-top: 1px solid var(--border); font-size: 12px; }
 </style>
 </head>
 <body>
 
 <header>
   <div class="container">
-    <div class="badge">Odoo 19 Enterprise v1.0</div>
-    <h1>Guía Maestra de <span>Despliegue</span></h1>
-    <p style="color: var(--text-muted)">Configuraciones optimizadas para Producción</p>
+    <div class="status-badge"><span>●</span> Deployment Master v19</div>
+    <h1>Odoo 19 <span>Enterprise</span></h1>
+    <p>Manual técnico interactivo. Ajusta los datos y copia los comandos.</p>
+    
+    <div class="method-picker">
+      <button class="m-btn active" id="btn-coolify" onclick="setMethod('coolify')">Cloud (Coolify/Dokploy)</button>
+      <button class="m-btn" id="btn-vps" onclick="setMethod('vps')">Terminal (VPS Directo)</button>
+    </div>
   </div>
 </header>
 
 <div class="container">
 
-  <!-- SELECTOR DE MÉTODO -->
-  <div class="method-selector">
-    <button class="method-btn active" onclick="setMethod('coolify')">Coolify / Dokploy</button>
-    <button class="method-btn" onclick="setMethod('vps')">VPS / Docker Directo</button>
-  </div>
-
-  <!-- CONFIGURACIÓN DINÁMICA -->
-  <div class="config-box">
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Contenedor Web (Odoo)</label>
-        <input type="text" id="var_web" value="odoo-prod" oninput="updateAll()">
+  <!-- FORMULARIO DINÁMICO -->
+  <div class="config-section">
+    <div class="config-grid">
+      <div class="input-group">
+        <label>Contenedor Web</label>
+        <input type="text" id="in_web" value="odoo-instance-app" oninput="render()">
       </div>
-      <div class="form-group">
-        <label>Contenedor DB (Postgres)</label>
-        <input type="text" id="var_db" value="postgres-prod" oninput="updateAll()">
+      <div class="input-group">
+        <label>Contenedor DB</label>
+        <input type="text" id="in_db" value="postgres-instance-db" oninput="render()">
       </div>
-      <div class="form-group">
-        <label>Usuario PostgreSQL</label>
-        <input type="text" id="var_user" value="odoo_user" oninput="updateAll()">
+      <div class="input-group" id="group-user">
+        <label>Usuario Postgres</label>
+        <input type="text" id="in_user" value="db_admin" oninput="render()">
       </div>
-      <div class="form-group">
-        <label>Password PostgreSQL</label>
-        <input type="text" id="var_pass" value="password_seguro" oninput="updateAll()">
+      <div class="input-group" id="group-pass">
+        <label>Password Postgres</label>
+        <input type="text" id="in_pass" value="strong_pass_example" oninput="render()">
       </div>
-      <div class="form-group">
-        <label>Nombre Base de Datos</label>
-        <input type="text" id="var_dbname" value="asorana_db" oninput="updateAll()">
+      <div class="input-group">
+        <label>Nombre DB Odoo</label>
+        <input type="text" id="in_dbname" value="odoo_prod_db" oninput="render()">
       </div>
-      <div class="form-group">
-        <label>Repo GitHub Addons</label>
-        <input type="text" id="var_repo" value="https://github.com/bytedav/odoo19.git" oninput="updateAll()">
+      <div class="input-group">
+        <label>Repo de Addons</label>
+        <input type="text" id="in_repo" value="https://github.com/bytedav/odoo19" oninput="render()">
       </div>
     </div>
   </div>
 
-  <!-- PASO 0: COMPOSE -->
-  <div class="step open">
+  <!-- FASE 1: INFRAESTRUCTURA -->
+  <div style="margin-bottom: 20px; font-weight: 800; color: var(--accent-light); font-size: 12px; letter-spacing: 2px;">FASE 1: INFRAESTRUCTURA Y ARCHIVOS</div>
+
+  <div class="step-card open">
     <div class="step-header" onclick="toggleStep(this)">
-      <div class="step-num">00</div>
-      <div class="step-title"><h3>Docker Compose</h3></div>
+      <div class="step-icon">00</div>
+      <div class="step-title">
+        <h3>Desplegar Stack (Docker Compose)</h3>
+        <p>Lanzar contenedores base</p>
+      </div>
     </div>
-    <div class="step-body">
-      <div class="note info" id="compose-note">Copia esta configuración en tu plataforma.</div>
-      <div class="code-block">
-        <div class="code-header"><span>docker-compose.yml</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content" id="code-compose">...</div>
+    <div class="step-content">
+      <div class="note info">Asegúrate de mapear los volúmenes para que tus módulos Enterprise y configuraciones no se pierdan al reiniciar.</div>
+      <div class="code-box">
+        <div class="code-top"><span>YAML</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+        <div class="code-area" id="code-compose"></div>
       </div>
     </div>
   </div>
 
-  <!-- PASO 1: GIT ENTERPRISE -->
-  <div class="step">
+  <div class="step-card">
     <div class="step-header" onclick="toggleStep(this)">
-      <div class="step-num">01</div>
-      <div class="step-title"><h3>Instalar Git y Clonar Addons</h3></div>
+      <div class="step-icon">01</div>
+      <div class="step-title">
+        <h3>Inyectar Código Enterprise</h3>
+        <p>Instalar git y clonar addons en el volumen</p>
+      </div>
     </div>
-    <div class="step-body">
-      <div class="note warning">Se requiere <b>-u root</b> para tener permisos de instalación. El proceso puede tardar 2-3 minutos.</div>
-      <div class="code-block">
-        <div class="code-header"><span>Comando Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content tpl">docker exec -u root {WEB} bash -c "apt-get update && apt-get install -y git && git clone {REPO} /tmp/odoo19 && cp -r /tmp/odoo19/* /mnt/extra-addons/ && chown -R odoo:odoo /mnt/extra-addons && echo 'MODULOS_LISTOS'"</div>
+    <div class="step-content">
+      <div class="note warning">Usamos <b>-u root</b> porque el usuario por defecto de la imagen (odoo) no tiene permisos de escritura en carpetas de sistema.</div>
+      <div class="code-box">
+        <div class="code-top"><span>BASH</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+        <div class="code-area tpl">docker exec -u root {WEB} bash -c "apt-get update -qq && apt-get install -y git -qq && git clone {REPO} /tmp/addons && cp -r /tmp/addons/* /mnt/extra-addons/ && chown -R odoo:odoo /mnt/extra-addons && echo 'ADDONS_READY'"</div>
       </div>
     </div>
   </div>
 
-  <!-- PASO 2: ODOO.CONF -->
-  <div class="step">
+  <div class="step-card">
     <div class="step-header" onclick="toggleStep(this)">
-      <div class="step-num">02</div>
-      <div class="step-title"><h3>Generar odoo.conf</h3></div>
+      <div class="step-icon">02</div>
+      <div class="step-title">
+        <h3>Configurar odoo.conf e IA</h3>
+        <p>Enlace de módulos y Parche de IA</p>
+      </div>
     </div>
-    <div class="step-body">
-      <div class="note info">Asegura que el <b>addons_path</b> incluya tanto los módulos base como los de Enterprise.</div>
-      <div class="code-block">
-        <div class="code-header"><span>Configuración</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content tpl">docker exec -u root {WEB} bash -c "mkdir -p /etc/odoo && cat > /etc/odoo/odoo.conf << 'EOF'
+    <div class="step-content">
+      <div class="note error"><b>¡IMPORTANTE!</b> El parche de IA resuelve un bug de la v19 que bloquea la interfaz al escribir. Debe aplicarse antes de iniciar sesión.</div>
+      <div class="code-box">
+        <div class="code-top"><span>Generar odoo.conf</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+        <div class="code-area tpl">docker exec -u root {WEB} bash -c "mkdir -p /etc/odoo && cat > /etc/odoo/odoo.conf << 'EOF'
 [options]
 addons_path = /usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
 db_host = {HOST}
 db_port = 5432
 db_user = {USER}
 db_password = {PASS}
-admin_passwd = bytedav
+admin_passwd = admin_master_key
 EOF"</div>
       </div>
-    </div>
-  </div>
-
-  <!-- PASO 3: PARCHE AI -->
-  <div class="step">
-    <div class="step-header" onclick="toggleStep(this)">
-      <div class="step-num">03</div>
-      <div class="step-title"><h3>Aplicar Parche AI (Bug stopPropagation)</h3></div>
-    </div>
-    <div class="step-body">
-      <div class="note error"><b>Crítico en Odoo 19:</b> Evita que el sistema colapse al intentar usar el panel lateral de Inteligencia Artificial.</div>
-      <div class="code-block">
-        <div class="code-header"><span>Patch JS</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content tpl">docker exec -u root {WEB} bash -c "cat > /mnt/extra-addons/ai/static/src/discuss/composer_patch.js << 'EOF'
+      <div class="code-box">
+        <div class="code-top"><span>Aplicar Parche IA (Fix JS)</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+        <div class="code-area tpl">docker exec -u root {WEB} bash -c "cat > /mnt/extra-addons/ai/static/src/discuss/composer_patch.js << 'EOF'
 import { Composer } from \"@mail/core/common/composer\";
 import { patch } from \"@web/core/utils/patch\";
 patch(Composer.prototype, {
-    saveContent() {
-        if (this.thread?.channel_type === \"ai_chat\") return;
-        super.saveContent();
-    },
-    onFocusin(ev) {
-        if (ev) super.onFocusin(ev);
-        if (this.thread?.channel_type === \"ai_chat\" && ev?.target) ev.target.select();
-    },
-    get wysiwygConfig() {
-        const config = super.wysiwygConfig;
-        return { ...config, getRecordInfo: () => ({ resModel: this.thread?.model, resId: this.thread?.id }) };
-    }
+    saveContent() { if (this.thread?.channel_type === \"ai_chat\") return; super.saveContent(); },
+    onFocusin(ev) { if (ev) super.onFocusin(ev); if (this.thread?.channel_type === \"ai_chat\" && ev?.target) ev.target.select(); },
+    get wysiwygConfig() { const config = super.wysiwygConfig; return { ...config, getRecordInfo: () => ({ resModel: this.thread?.model, resId: this.thread?.id }) }; }
 });
 EOF"</div>
       </div>
-    </div>
-  </div>
-
-  <!-- PASO 4: PGVECTOR -->
-  <div class="step">
-    <div class="step-header" onclick="toggleStep(this)">
-      <div class="step-num">04</div>
-      <div class="step-title"><h3>Habilitar IA (pgvector)</h3></div>
-    </div>
-    <div class="step-body">
-      <p>Instala el motor de vectores en Postgres para que los Agentes de IA puedan leer documentos.</p>
-      <div class="code-block">
-        <div class="code-header"><span>Instalación pgvector</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content tpl">docker exec -u root {DB} bash -c "apt-get update && apt-get install -y postgresql-17-pgvector" && docker restart {WEB}</div>
+      <div class="code-box">
+        <div class="code-top"><span>Instalar pgvector (Para memoria IA)</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+        <div class="code-area tpl">docker exec -u root {DB} bash -c "apt-get update -qq && apt-get install -y postgresql-17-pgvector -qq" && docker restart {WEB}</div>
       </div>
     </div>
   </div>
 
-  <!-- PASO 5: SQL POST-CONFIG -->
-  <div class="step">
-    <div class="step-header" onclick="toggleStep(this)">
-      <div class="step-num">05</div>
-      <div class="step-title"><h3>Ajustes Finales en Base de Datos</h3></div>
+  <!-- FASE 2: ACCIÓN WEB (RESALTADO) -->
+  <div class="web-action">
+    <h2>🚀 ACCIÓN REQUERIDA: Crear Base de Datos</h2>
+    <p>Antes de continuar con los parches finales, debes crear la estructura en Postgres.</p>
+    <div style="text-align: left; max-width: 600px; margin: 0 auto; color: white;">
+        <ol style="margin-left: 20px;">
+            <li>Abre tu navegador en: <span class="url-box">http://tu-ip:8069</span></li>
+            <li>Usa el Master Password definido (<b>admin_master_key</b>).</li>
+            <li>Pon el nombre de base de datos: <b style="color:var(--accent-light)">{DBNAME}</b>.</li>
+            <li><b>NO</b> marques la casilla "Demo Data".</li>
+            <li>Espera a que cargue el tablero principal.</li>
+        </ol>
     </div>
-    <div class="step-body">
-      <div class="note info">Ejecutar <b>después</b> de crear la base de datos en el asistente web.</div>
-      <div class="code-block">
-        <div class="code-header"><span>SQL Post-Deploy</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content tpl">docker exec {DB} psql -U {USER} -d {DBNAME} -c "
+    <div class="note info" style="margin-top:20px; background: rgba(0,0,0,0.3);">
+        <b>Nota:</b> Los siguientes comandos SQL darán error si la base de datos no ha sido creada primero en este paso.
+    </div>
+  </div>
+
+  <!-- FASE 3: TUNING FINAL -->
+  <div style="margin-bottom: 20px; font-weight: 800; color: var(--accent-light); font-size: 12px; letter-spacing: 2px;">FASE 2: TUNING Y PARCHES DE BASE DE DATOS</div>
+
+  <div class="step-card">
+    <div class="step-header" onclick="toggleStep(this)">
+      <div class="step-icon">03</div>
+      <div class="step-title">
+        <h3>Activar Enterprise y Extensiones</h3>
+        <p>Quitar expiración y habilitar Vector IA</p>
+      </div>
+    </div>
+    <div class="step-content">
+      <div class="code-box">
+        <div class="code-top"><span>SQL Tuning</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+        <div class="code-area tpl">docker exec {DB} psql -U {USER} -d {DBNAME} -c "
 INSERT INTO ir_config_parameter (key, value) VALUES 
 ('database.expiration_date', '2099-12-31'),
 ('database.expiration_reason', 'enterprise'),
@@ -258,115 +296,78 @@ CREATE EXTENSION IF NOT EXISTS vector;"</div>
     </div>
   </div>
 
-  <!-- PASO 6: DEPENDENCIAS PYTHON -->
-  <div class="step">
+  <div class="step-card">
     <div class="step-header" onclick="toggleStep(this)">
-      <div class="step-num">06</div>
-      <div class="step-title"><h3>Dependencias de Módulos (PIP)</h3></div>
-    </div>
-    <div class="step-body">
-      <div class="note warning">Necesario para módulos de Redes Sociales, WhatsApp y Marketing Automático.</div>
-      <div class="code-block">
-        <div class="code-header"><span>PIP Install</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content tpl">docker exec -u root {WEB} bash -c "pip3 install google-auth phonenumbers --break-system-packages" && docker restart {WEB}</div>
+      <div class="step-icon">04</div>
+      <div class="step-title">
+        <h3>Dependencias PIP y Branding</h3>
+        <p>Librerías necesarias y limpieza visual</p>
       </div>
     </div>
-  </div>
-
-  <!-- PASO 7: QUITAR BRANDING -->
-  <div class="step">
-    <div class="step-header" onclick="toggleStep(this)">
-      <div class="step-num">07</div>
-      <div class="step-title"><h3>Quitar Marca "Powered by Odoo"</h3></div>
-    </div>
-    <div class="step-body">
-      <div class="code-block">
-        <div class="code-header"><span>SQL Branding</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content tpl">docker exec {DB} psql -U {USER} -d {DBNAME} -c "UPDATE ir_ui_view SET active = false WHERE name LIKE '%brand_promotion%';"</div>
+    <div class="step-content">
+      <div class="note warning">Instalamos <b>google-auth</b> y <b>phonenumbers</b> para evitar errores en los módulos de Social y WhatsApp.</div>
+      <div class="code-box">
+        <div class="code-top"><span>Instalar PIP Deps</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+        <div class="code-area tpl">docker exec -u root {WEB} bash -c "pip3 install google-auth phonenumbers --break-system-packages"</div>
       </div>
-    </div>
-  </div>
-
-  <div style="margin: 30px 0 10px; font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Herramientas</div>
-  
-  <div class="step">
-    <div class="step-header" onclick="toggleStep(this)">
-      <div class="step-num">M</div>
-      <div class="step-title"><h3>Mantenimiento Rápido</h3></div>
-    </div>
-    <div class="step-body">
-      <div class="code-block">
-        <div class="code-header"><span>Ver Logs</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content tpl">docker logs -f {WEB}</div>
+      <div class="code-box">
+        <div class="code-top"><span>Quitar "Powered by Odoo"</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+        <div class="code-area tpl">docker exec {DB} psql -U {USER} -d {DBNAME} -c "UPDATE ir_ui_view SET active = false WHERE name LIKE '%brand_promotion%';"</div>
       </div>
-      <div class="code-block">
-        <div class="code-header"><span>Forzar Actualización de Módulos</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-        <div class="code-content tpl">docker exec -u odoo {WEB} odoo -d {DBNAME} -u all --stop-after-init && docker restart {WEB}</div>
-      </div>
+      <div class="note success"><b>¡Todo listo!</b> Ahora puedes ir a Aplicaciones e instalar: web_enterprise, web_studio, account_accountant y ai.</div>
     </div>
   </div>
 
 </div>
 
 <footer>
-  Bytedav Odoo 19 Enterprise Documentation · 2025
+  Centro de Documentación Odoo 19 Enterprise · Repositorio: github.com/bytedav/odoo19
 </footer>
 
 <script>
-  let currentMethod = 'coolify';
+  let method = 'coolify';
 
-  const templates = {
+  const presets = {
     coolify: {
       host: 'postgresql',
       user: '$SERVICE_USER_POSTGRES',
       pass: '$SERVICE_PASSWORD_POSTGRES',
-      compose: `services:
+      compose: (v) => `services:
   odoo:
     image: 'odoo:19.0'
     environment:
-      - SERVICE_URL_ODOO_8069
       - HOST=postgresql
       - USER=$SERVICE_USER_POSTGRES
       - PASSWORD=$SERVICE_PASSWORD_POSTGRES
     volumes:
-      - 'odoo-web-data:/var/lib/odoo'
-      - 'odoo-extra-addons:/mnt/extra-addons'
+      - 'odoo-data:/var/lib/odoo'
+      - 'extra-addons:/mnt/extra-addons'
       - 'odoo-config:/etc/odoo'
-    depends_on:
-      postgresql:
-        condition: service_healthy
     deploy:
       resources:
-        limits:
-          memory: 4G
+        limits: { memory: 4G }
     restart: unless-stopped
 
   postgresql:
     image: 'postgres:17'
-    volumes:
-      - 'postgresql-data:/var/lib/postgresql/data'
     environment:
       - POSTGRES_USER=$SERVICE_USER_POSTGRES
       - POSTGRES_PASSWORD=$SERVICE_PASSWORD_POSTGRES
       - POSTGRES_DB=postgres
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d postgres"]
+    volumes:
+      - 'db-data:/var/lib/postgresql/data'
     command: >
       postgres -c shared_buffers=512MB -c effective_cache_size=1536MB`
     },
     vps: {
       host: 'db',
-      compose: `services:
+      compose: (v) => `services:
   db:
     image: postgres:17
-    container_name: {DB_NAME}
+    container_name: ${v.DB}
     environment:
-      - POSTGRES_USER={USER}
-      - POSTGRES_PASSWORD={PASS}
+      - POSTGRES_USER=${v.USER}
+      - POSTGRES_PASSWORD=${v.PASS}
       - POSTGRES_DB=postgres
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
@@ -374,15 +375,15 @@ CREATE EXTENSION IF NOT EXISTS vector;"</div>
 
   odoo:
     image: odoo:19.0
-    container_name: {WEB_NAME}
+    container_name: ${v.WEB}
     depends_on:
       - db
     ports:
       - "8069:8069"
     environment:
       - HOST=db
-      - USER={USER}
-      - PASSWORD={PASS}
+      - USER=${v.USER}
+      - PASSWORD=${v.PASS}
     volumes:
       - ./odoo_data:/var/lib/odoo
       - ./extra-addons:/mnt/extra-addons
@@ -392,60 +393,49 @@ CREATE EXTENSION IF NOT EXISTS vector;"</div>
   };
 
   function setMethod(m) {
-    currentMethod = m;
-    document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    updateAll();
+    method = m;
+    document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-' + m).classList.add('active');
+    document.getElementById('group-user').style.display = m === 'coolify' ? 'none' : 'flex';
+    document.getElementById('group-pass').style.display = m === 'coolify' ? 'none' : 'flex';
+    render();
   }
 
-  function toggleStep(header) {
-    header.parentElement.classList.toggle('open');
-  }
+  function toggleStep(el) { el.parentElement.classList.toggle('open'); }
 
-  function updateAll() {
+  function render() {
     const vars = {
-      WEB: document.getElementById('var_web').value,
-      DB: document.getElementById('var_db').value,
-      USER: currentMethod === 'coolify' ? templates.coolify.user : document.getElementById('var_user').value,
-      PASS: currentMethod === 'coolify' ? templates.coolify.pass : document.getElementById('var_pass').value,
-      DBNAME: document.getElementById('var_dbname').value,
-      REPO: document.getElementById('var_repo').value,
-      HOST: templates[currentMethod].host
+      WEB: document.getElementById('in_web').value,
+      DB: document.getElementById('in_db').value,
+      USER: method === 'coolify' ? presets.coolify.user : document.getElementById('in_user').value,
+      PASS: method === 'coolify' ? presets.coolify.pass : document.getElementById('in_pass').value,
+      DBNAME: document.getElementById('in_dbname').value,
+      REPO: document.getElementById('in_repo').value,
+      HOST: presets[method].host
     };
 
-    // Actualizar Compose
-    let comp = templates[currentMethod].compose
-      .replace(/{WEB_NAME}/g, vars.WEB)
-      .replace(/{DB_NAME}/g, vars.DB)
-      .replace(/{USER}/g, vars.USER)
-      .replace(/{PASS}/g, vars.PASS);
-    document.getElementById('code-compose').innerText = comp;
+    document.getElementById('code-compose').innerText = presets[method].compose(vars);
 
-    // Actualizar resto de comandos
+    // Actualizar también el bloque de acción web visual
+    document.querySelector('.web-action').innerHTML = document.querySelector('.web-action').innerHTML
+        .replace(/{DBNAME}/g, vars.DBNAME);
+
     document.querySelectorAll('.tpl').forEach(el => {
       let t = el.getAttribute('data-original') || el.innerText;
       if(!el.getAttribute('data-original')) el.setAttribute('data-original', t);
-      
-      let res = t.replace(/{WEB}/g, vars.WEB)
-                 .replace(/{DB}/g, vars.DB)
-                 .replace(/{USER}/g, vars.USER)
-                 .replace(/{PASS}/g, vars.PASS)
-                 .replace(/{DBNAME}/g, vars.DBNAME)
-                 .replace(/{REPO}/g, vars.REPO)
-                 .replace(/{HOST}/g, vars.HOST);
-      el.innerText = res;
+      el.innerText = t.replace(/{WEB}/g, vars.WEB).replace(/{DB}/g, vars.DB).replace(/{USER}/g, vars.USER).replace(/{PASS}/g, vars.PASS).replace(/{DBNAME}/g, vars.DBNAME).replace(/{REPO}/g, vars.REPO).replace(/{HOST}/g, vars.HOST);
     });
   }
 
   function copyCode(btn) {
-    const code = btn.closest('.code-block').querySelector('.code-content').innerText;
+    const code = btn.parentElement.nextElementSibling.innerText;
     navigator.clipboard.writeText(code);
     const old = btn.innerText;
-    btn.innerText = '✅ Copiado';
-    setTimeout(() => btn.innerText = old, 2000);
+    btn.innerText = 'Copiado!';
+    setTimeout(() => btn.innerText = old, 1500);
   }
 
-  document.addEventListener('DOMContentLoaded', updateAll);
+  document.addEventListener('DOMContentLoaded', render);
 </script>
 </body>
 </html>
